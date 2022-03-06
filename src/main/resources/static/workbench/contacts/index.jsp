@@ -1,34 +1,96 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<% String base = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/"; %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
-
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
-
+	<base href="<%=base%>">
+	<meta charset="UTF-8">
+	<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+	<link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
+	<script type="text/javascript" src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
+	<script type="text/javascript" src="jquery/bs_pagination/en.js"></script>
 <script type="text/javascript">
 
 	$(function(){
-		
-		//定制字段
 		$("#definedColumns > li").click(function(e) {
-			//防止下拉菜单消失
 	        e.stopPropagation();
 	    });
+
+		contactsList(1,3);
 		
 	});
+
+	function contactsList(pageNo,pageSize) {
+		$("#checkAll").prop("checked",false);
+		$("#owner").val($.trim($("#hid-owner").val()));
+		$("#name").val($.trim($("#hid-name").val()));
+		$("#customerId").val($.trim($("#hid-customerId").val()));
+		$("#source").val($.trim($("#hid-source").val()));
+		$("#birth").val($.trim($("#hid-birth").val()));
+		$.ajax({
+			url:"contact/contacts",
+			data:{
+				"pageNo":pageNo,
+				"pageSize":pageSize,
+				"owner":$.trim($("#owner").val()),
+				"fullname":$.trim($("#fullname").val()),
+				"customerId":$.trim($("#customerId").val()),
+				"source":$.trim($("#source").val()),
+				"birth":$.trim($("#birth").val())
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+				if (data!=null) {
+					var html = "";
+					$.each(data.dataList,function (i,obj) {
+						html += "<tr><td><input name='check' type='checkbox' value='"+obj.id+"'/></td>"
+								+"<td><a style='text-decoration: none; cursor: pointer;' onclick=window.location.href=\'customer/detail?id="+obj.id+"\';>"+obj.fullname+"</a></td>"
+								+"<td>"+obj.customerId+"</td>"
+								+"<td>"+obj.owner+"</td>"
+								+"<td>"+obj.source+"</td>"
+								+"<td>"+obj.birth+"</td></tr>";
+					})
+					$("#tbody-contacts").html(html);
+					var totalPages = data.total%pageSize==0 ? data.total/pageSize : Math.ceil(data.total/pageSize);
+					//bootstrap pagination
+					$("#contactsPage").bs_pagination({
+						currentPage: pageNo,
+						rowsPerPage: pageSize,
+						maxRowsPerPage: 20,
+						totalPages: totalPages,
+						totalRows: data.total,
+						visiblePageLinks: 5,
+						showGoToPage: true,
+						showRowsPerPage: true,
+						showRowsInfo: true,
+						showRowsDefaultInfo: true,
+						onChangePage : function(event, data){
+							contactsList(data.currentPage , data.rowsPerPage);
+						}
+					});
+				} else alert("Contacts query failed!");
+			}
+		})
+	}
 	
 </script>
 </head>
 <body>
-
+	<input type="hidden" id="hid-owner" />
+	<input type="hidden" id="hid-name" />
+	<input type="hidden" id="hid-customerId" />
+	<input type="hidden" id="hid-source" />
+	<input type="hidden" id="hid-birth" />
 	
-	<!-- 创建联系人的模态窗口 -->
+	<!-- create contact modal -->
 	<div class="modal fade" id="createContactsModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">
 			<div class="modal-content">
@@ -165,7 +227,7 @@
 		</div>
 	</div>
 	
-	<!-- 修改联系人的模态窗口 -->
+	<!-- edit contact modal -->
 	<div class="modal fade" id="editContactsModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">
 			<div class="modal-content">
@@ -308,7 +370,7 @@
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
-				<h3>联系人列表</h3>
+				<h3>Contacts List</h3>
 			</div>
 		</div>
 	</div>
@@ -322,140 +384,77 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">Owner</div>
+				      <input id="owner" class="form-control" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">姓名</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">Fullname</div>
+				      <input id="fullname" class="form-control" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">客户名称</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">Customer</div>
+				      <input id="customerId" class="form-control" type="text">
 				    </div>
 				  </div>
 				  
-				  <br>
-				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">来源</div>
-				      <select class="form-control" id="edit-clueSource">
+				      <div class="input-group-addon">Source</div>
+				      <select id="source" class="form-control">
 						  <option></option>
-						  <option>广告</option>
-						  <option>推销电话</option>
-						  <option>员工介绍</option>
-						  <option>外部介绍</option>
-						  <option>在线商场</option>
-						  <option>合作伙伴</option>
-						  <option>公开媒介</option>
-						  <option>销售邮件</option>
-						  <option>合作伙伴研讨会</option>
-						  <option>内部研讨会</option>
-						  <option>交易会</option>
-						  <option>web下载</option>
-						  <option>web调研</option>
-						  <option>聊天</option>
+						  <c:forEach items="${source}" var="dicValue" >
+							  <option value="${dicValue.value}">${dicValue.text}</option>
+						  </c:forEach>
 						</select>
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">生日</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">Birthday</div>
+				      <input id="birth" class="form-control" type="text">
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="submit" class="btn btn-default">Query</button>
 				  
 				</form>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 10px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createContactsModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContactsModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createContactsModal"><span class="glyphicon glyphicon-plus"></span> Create</button>
+				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContactsModal"><span class="glyphicon glyphicon-pencil"></span> Update</button>
+				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> Delete</button>
 				</div>
-				
 				
 			</div>
 			<div style="position: relative;top: 20px;">
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
-							<td>姓名</td>
-							<td>客户名称</td>
-							<td>所有者</td>
-							<td>来源</td>
-							<td>生日</td>
+							<td><input id="" type="checkbox" /></td>
+							<td>Name</td>
+							<td>Customer</td>
+							<td>Owner</td>
+							<td>Source</td>
+							<td>Birthday</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四</a></td>
-							<td>动力节点</td>
-							<td>zhangsan</td>
-							<td>广告</td>
-							<td>2000-10-10</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四</a></td>
-                            <td>动力节点</td>
-                            <td>zhangsan</td>
-                            <td>广告</td>
-                            <td>2000-10-10</td>
-                        </tr>
+					<tbody id="tbody-contacts">
+
 					</tbody>
 				</table>
 			</div>
-			
-			<div style="height: 50px; position: relative;top: 10px;">
-				<div>
-					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
-				</div>
-				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
-					<button type="button" class="btn btn-default" style="cursor: default;">显示</button>
-					<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-							10
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">20</a></li>
-							<li><a href="#">30</a></li>
-						</ul>
-					</div>
-					<button type="button" class="btn btn-default" style="cursor: default;">条/页</button>
-				</div>
-				<div style="position: relative;top: -88px; left: 285px;">
-					<nav>
-						<ul class="pagination">
-							<li class="disabled"><a href="#">首页</a></li>
-							<li class="disabled"><a href="#">上一页</a></li>
-							<li class="active"><a href="#">1</a></li>
-							<li><a href="#">2</a></li>
-							<li><a href="#">3</a></li>
-							<li><a href="#">4</a></li>
-							<li><a href="#">5</a></li>
-							<li><a href="#">下一页</a></li>
-							<li class="disabled"><a href="#">末页</a></li>
-						</ul>
-					</nav>
-				</div>
+			<div id="contactsPage" style="height: 70px; position: relative;top: 10px;">
+				<!-- bootstrap pagination -->
 			</div>
-			
 		</div>
-		
 	</div>
 </body>
 </html>

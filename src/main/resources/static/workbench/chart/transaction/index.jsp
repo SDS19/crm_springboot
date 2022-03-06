@@ -13,7 +13,7 @@
         function charts() {
             var myChart = echarts.init(document.getElementById('main'));
             $.ajax({
-                url: "clue/chart",
+                url: "transaction/chart",
                 type: "get",
                 dataType: "json",
                 success: function (data) {
@@ -88,6 +88,6 @@
     </script>
 </head>
 <body>
-<div id="main" style="width: 800px;height:600px;"></div>
+    <div id="main" style="width: 800px;height:600px;"></div>
 </body>
 </html>

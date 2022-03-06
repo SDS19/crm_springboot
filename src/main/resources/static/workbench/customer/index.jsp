@@ -1,33 +1,101 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<% String base = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/"; %>
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+	<base href="<%=base%>">
+	<meta charset="UTF-8">
+	<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
+	<script type="text/javascript" src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
+	<script type="text/javascript" src="jquery/bs_pagination/en.js"></script>
+	<script type="text/javascript">
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+		$(function(){
 
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+			/*$("#definedColumns > li").click(function(e) {
+				e.stopPropagation();
+			});*/
 
-<script type="text/javascript">
+			customerList(1,3);
 
-	$(function(){
+			//checkbox
+			$("#checkAll").click(function () {
+				$("input[name=check]").prop("checked",this.checked);
+			})
+			$("#tbody-customer").on("click",$("input[name=check]"),function () {
+				$("#checkAll").prop("checked",$("input[name=check]").length==$("input[name=check]:checked").length);
+			})
 		
-		//定制字段
-		$("#definedColumns > li").click(function(e) {
-			//防止下拉菜单消失
-	        e.stopPropagation();
-	    });
-		
-	});
+		});
+
+		function customerList(pageNo,pageSize) {
+			$("#checkAll").prop("checked",false);
+			$("#name").val($.trim($("#hid-name").val()));
+			$("#owner").val($.trim($("#hid-owner").val()));
+			$("#phone").val($.trim($("#hid-phone").val()));
+			$("#website").val($.trim($("#hid-website").val()));
+			$.ajax({
+				url:"customer/customers",
+				data:{
+					"pageNo":pageNo,
+					"pageSize":pageSize,
+					"name":$.trim($("#name").val()),
+					"owner":$.trim($("#owner").val()),
+					"phone":$.trim($("#phone").val()),
+					"website":$.trim($("#website").val())
+				},
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					if (data!=null) {
+						var html = "";
+						$.each(data.dataList,function (i,obj) {
+							html += "<tr><td><input name='check' type='checkbox' value='"+obj.id+"'/></td>"
+									+"<td><a style='text-decoration: none; cursor: pointer;' onclick=window.location.href=\'customer/detail?id="+obj.id+"\';>"+obj.name+"</a></td>"
+									+"<td>"+obj.owner+"</td>"
+									+"<td>"+obj.phone+"</td>"
+									+"<td>"+obj.website+"</td></tr>";
+						})
+						$("#tbody-customer").html(html);
+						var totalPages = data.total%pageSize==0 ? data.total/pageSize : Math.ceil(data.total/pageSize);
+						//bootstrap pagination
+						$("#customerPage").bs_pagination({
+							currentPage: pageNo,
+							rowsPerPage: pageSize,
+							maxRowsPerPage: 20,
+							totalPages: totalPages,
+							totalRows: data.total,
+							visiblePageLinks: 5,
+							showGoToPage: true,
+							showRowsPerPage: true,
+							showRowsInfo: true,
+							showRowsDefaultInfo: true,
+							onChangePage : function(event, data){
+								customerList(data.currentPage , data.rowsPerPage);
+							}
+						});
+					} else alert("Customers query failed!");
+				}
+			})
+		}
+
+
 	
-</script>
+	</script>
 </head>
 <body>
 
-	<!-- 创建客户的模态窗口 -->
+	<input type="hidden" id="hid-name" />
+	<input type="hidden" id="hid-owner" />
+	<input type="hidden" id="hid-phone" />
+	<input type="hidden" id="hid-website" />
+
+	<!-- create customer modal -->
 	<div class="modal fade" id="createCustomerModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">
 			<div class="modal-content">
@@ -35,13 +103,13 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel1">创建客户</h4>
+					<h4 class="modal-title" id="myModalLabel1">Create Customer</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form">
 					
 						<div class="form-group">
-							<label for="create-customerOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-customerOwner" class="col-sm-2 control-label">owner<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-customerOwner">
 								  <option>zhangsan</option>
@@ -109,7 +177,7 @@
 		</div>
 	</div>
 	
-	<!-- 修改客户的模态窗口 -->
+	<!-- update customer modal  -->
 	<div class="modal fade" id="editCustomerModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">
 			<div class="modal-content">
@@ -117,7 +185,7 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel">修改客户</h4>
+					<h4 class="modal-title" id="myModalLabel">Update Customer</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form">
@@ -199,7 +267,7 @@
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
-				<h3>客户列表</h3>
+				<h3>Customer List</h3>
 			</div>
 		</div>
 	</div>
@@ -213,41 +281,41 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">Name</div>
+				      <input id="name" class="form-control" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">Owner</div>
+				      <input id="owner" class="form-control" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">公司座机</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">Phone</div>
+				      <input id="phone" class="form-control" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">公司网站</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">Website</div>
+				      <input id="website" class="form-control" type="text">
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="submit" class="btn btn-default">Query</button>
 				  
 				</form>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCustomerModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCustomerModal"><span class="glyphicon glyphicon-plus"></span> Create</button>
+				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span class="glyphicon glyphicon-pencil"></span> Update</button>
+				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> Delete</button>
 				</div>
 				
 			</div>
@@ -255,69 +323,22 @@
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
-							<td>名称</td>
-							<td>所有者</td>
-							<td>公司座机</td>
-							<td>公司网站</td>
+							<td><input id="checkAll" type="checkbox" /></td>
+							<td>Name</td>
+							<td>Owner</td>
+							<td>Phone</td>
+							<td>Website</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">动力节点</a></td>
-							<td>zhangsan</td>
-							<td>010-84846003</td>
-							<td>http://www.bjpowernode.com</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">动力节点</a></td>
-                            <td>zhangsan</td>
-                            <td>010-84846003</td>
-                            <td>http://www.bjpowernode.com</td>
-                        </tr>
+					<tbody id="tbody-customer">
+
 					</tbody>
 				</table>
 			</div>
-			
-			<div style="height: 50px; position: relative;top: 30px;">
-				<div>
-					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
-				</div>
-				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
-					<button type="button" class="btn btn-default" style="cursor: default;">显示</button>
-					<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-							10
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">20</a></li>
-							<li><a href="#">30</a></li>
-						</ul>
-					</div>
-					<button type="button" class="btn btn-default" style="cursor: default;">条/页</button>
-				</div>
-				<div style="position: relative;top: -88px; left: 285px;">
-					<nav>
-						<ul class="pagination">
-							<li class="disabled"><a href="#">首页</a></li>
-							<li class="disabled"><a href="#">上一页</a></li>
-							<li class="active"><a href="#">1</a></li>
-							<li><a href="#">2</a></li>
-							<li><a href="#">3</a></li>
-							<li><a href="#">4</a></li>
-							<li><a href="#">5</a></li>
-							<li><a href="#">下一页</a></li>
-							<li class="disabled"><a href="#">末页</a></li>
-						</ul>
-					</nav>
-				</div>
+			<div id="customerPage" style="height: 70px; position: relative;top: 30px;">
+				<!-- bootstrap pagination -->
 			</div>
-			
 		</div>
-		
 	</div>
 </body>
 </html>

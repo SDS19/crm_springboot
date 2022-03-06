@@ -1,3 +1,6 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<% String base = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/"; %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +12,6 @@
 
 <script type="text/javascript">
 
-	//默认情况下取消和保存按钮是隐藏的
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
@@ -24,9 +26,7 @@
 		});
 		
 		$("#cancelBtn").click(function(){
-			//显示
 			$("#cancelAndSaveBtn").hide();
-			//设置remarkDiv的高度为130px
 			$("#remarkDiv").css("height","90px");
 			cancelAndSaveBtnDefault = true;
 		});
@@ -53,7 +53,7 @@
 </head>
 <body>
 
-	<!-- 删除联系人的模态窗口 -->
+	<!-- delete contacts modal -->
 	<div class="modal fade" id="removeContactsModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 30%;">
 			<div class="modal-content">
@@ -460,7 +460,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><a href="../transaction/detail.html" style="text-decoration: none;">动力节点-交易01</a></td>
+							<td><a href="../transaction/detail.jsp" style="text-decoration: none;">动力节点-交易01</a></td>
 							<td>5,000</td>
 							<td>谈判/复审</td>
 							<td>90</td>
@@ -473,7 +473,7 @@
 			</div>
 			
 			<div>
-				<a href="../transaction/save.html" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建交易</a>
+				<a href="../transaction/save.jsp" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建交易</a>
 			</div>
 		</div>
 	</div>
