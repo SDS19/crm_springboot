@@ -18,7 +18,6 @@
 	<script type="text/javascript">
 		$(function(){
 
-			//date time picker
 			$(".time").datetimepicker({
 				minView: "month",
 				language:  'zh-CN',

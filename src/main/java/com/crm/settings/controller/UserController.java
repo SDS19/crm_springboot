@@ -9,17 +9,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
 public class UserController {
 
     @Resource
     private UserService userService;
 
     @PostMapping
-    public Map<String,String> login(HttpServletRequest request,User user) {
+    @RequestMapping("/user")
+    public Map<String,String> signin(HttpServletRequest request,User user) {
         user.setLoginPwd(MD5Util.getMD5(user.getLoginPwd()));
         user.setAllowIps(request.getRemoteAddr());
         Map<String,String> map = new HashMap<>();
@@ -35,7 +36,13 @@ public class UserController {
         }
     }
 
+    @GetMapping("/owner")
+    public List<User> owner() {
+        return userService.owner();
+    }
+
     @GetMapping
+    @RequestMapping("/user")
     public void signout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.getSession().invalidate();
         response.sendRedirect("login.jsp");

@@ -7,5 +7,5 @@ public interface UserDao {
 
     User login(User user);
 
-    List<User> userList();
+    List<User> owner();
 }

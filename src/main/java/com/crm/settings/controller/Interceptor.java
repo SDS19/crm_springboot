@@ -17,10 +17,9 @@ public class Interceptor implements HandlerInterceptor {
             if ("XMLHttpRequest".equals(ajax)) {
                 response.setHeader("x-Redirect","true");
                 response.setHeader("x-Path",basePath+"login.jsp");
-                //response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return false;
             }else {
-                System.out.println("重定向");
+                System.err.println("redirect!");
                 response.sendRedirect(basePath+"login.jsp");
                 return false;
             }

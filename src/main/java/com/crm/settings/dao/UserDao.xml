@@ -8,7 +8,7 @@
         SELECT * FROM t_user WHERE loginAct = #{loginAct} AND loginPwd = #{loginPwd}
     </select>
 
-    <select id="userList" resultType="com.crm.settings.domain.User">
+    <select id="owner" resultType="com.crm.settings.domain.User">
         SELECT * FROM t_user ORDER BY createTime DESC
     </select>
 

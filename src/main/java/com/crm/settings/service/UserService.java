@@ -9,6 +9,6 @@ public interface UserService {
 
     User login(User user) throws LoginException;
 
-    List<User> userList();
+    List<User> owner();
 
 }
