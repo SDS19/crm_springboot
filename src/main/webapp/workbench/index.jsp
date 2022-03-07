@@ -14,42 +14,23 @@
 
 	$(function(){
 
-		//导航中所有文本颜色为黑色
 		$(".liClass > a").css("color" , "black");
-		
-		//默认选中导航菜单中的第一个菜单项
 		$(".liClass:first").addClass("active");
-		
-		//第一个菜单项的文字变成白色
 		$(".liClass:first > a").css("color" , "white");
-		
-		//给所有的菜单项注册鼠标单击事件
 		$(".liClass").click(function(){
-			//移除所有菜单项的激活状态
 			$(".liClass").removeClass("active");
-			//导航中所有文本颜色为黑色
 			$(".liClass > a").css("color" , "black");
-			//当前项目被选中
 			$(this).addClass("active");
-			//当前项目颜色变成白色
 			$(this).children("a").css("color","white");
 		});
 
 		window.open("workbench/main/index.html","workareaFrame");
-		
-	});
 
-	function signout() {
-		$.ajax({
-			url: "user/signout",
-			type: "get",
-			dataType: "json",
-			success: function (data) {
-				if (data=="1") window.location.href='login.jsp';
-				else alert("Sign out filed!");
-			}
+		$("#signoutBtn").click(function () {
+			window.location.href = "/user";
 		})
-	}
+
+	});
 	
 </script>
 
@@ -140,7 +121,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="signout()">Sure</button>
+					<button id="signoutBtn" type="button" class="btn btn-primary" data-dismiss="modal">Sure</button>
 				</div>
 			</div>
 		</div>
@@ -159,7 +140,7 @@
 						<li><a href="settings/index.html"><span class="glyphicon glyphicon-wrench"></span> Settings</a></li>
 						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span class="glyphicon glyphicon-file"></span> Profile</a></li>
 						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span class="glyphicon glyphicon-edit"></span> Update Password</a></li>
-						<li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
+						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#exitModal"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
 					</ul>
 				</li>
 			</ul>

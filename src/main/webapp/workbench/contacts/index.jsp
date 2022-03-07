@@ -77,6 +77,13 @@
 						}
 					});
 				} else alert("Contacts query failed!");
+			},
+			error:function (XMLHttpRequest,textStatus) {
+				var redirect = XMLHttpRequest.getResponseHeader("x-Redirect");
+				if (redirect=="true") {
+					alert("Please login!");
+					window.location.href = XMLHttpRequest.getResponseHeader("x-Path");
+				}
 			}
 		})
 	}

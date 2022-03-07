@@ -29,11 +29,11 @@
 			$("#submitBtn").click(function () {
 				login();
 			});
-			//Press "Enter" submit form
 			$(window).keydown(function (event) {//event can get which key is pressed
 				if (event.keyCode==13) login();
 			})
 		})
+
 		function login() {
 			var loginAct = $.trim($("#loginAct").val());
 			var loginPwd = $.trim($("#loginPwd").val());
@@ -43,7 +43,7 @@
 			}
 			$("#msg").html("");
 			$.ajax({
-				url:"user/login",
+				url:"user",
 				data:{
 					"loginAct":loginAct,
 					"loginPwd":loginPwd
