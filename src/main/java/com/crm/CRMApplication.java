@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@MapperScan(basePackages = {"com.crm.settings.dao"})
+@MapperScan(basePackages = {"com.crm.settings.dao","com.crm.workbench.dao"})
 public class CRMApplication {
 
     public static void main(String[] args) {

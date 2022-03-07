@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crm.workbench.dao.ContactsRemarkDao">
+
+    <insert id="insert">
+        INSERT INTO t_contacts_remark(id,noteContent,createBy,createTime,editFlag,contactsId)
+        VALUES(#{id},#{noteContent},#{createBy},#{createTime},'0',#{contactsId})
+    </insert>
+  	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

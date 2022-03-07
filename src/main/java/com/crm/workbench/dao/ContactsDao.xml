@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crm.workbench.dao.ContactsDao">
+
+    <select id="total" resultType="int">
+        SELECT COUNT(*) FROM t_contacts c JOIN t_user u ON c.owner=u.id
+        <where>
+            <if test="owner!=null and owner!=''">
+                u.name LIKE CONCAT('%',#{owner},'%')
+            </if>
+            <if test="fullname!=null and fullname!=''">
+                c.fullname LIKE CONCAT('%',#{fullname},'%')
+            </if>
+            <if test="customerId!=null and customerId!=''">
+                c.customerId LIKE CONCAT('%',#{customerId},'%')
+            </if>
+            <if test="source!=null and source!=''">
+                c.source LIKE CONCAT('%',#{source},'%')
+            </if>
+            <if test="birth!=null and birth!=''">
+                c.birth LIKE CONCAT('%',#{birth},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="contactsList" resultType="contacts">
+        SELECT c.id,c.fullname,s.name customerId,u.name owner,c.source,c.birth
+        FROM t_contacts c JOIN t_user u ON c.owner=u.id
+                          JOIN t_customer s ON c.customerId=s.id
+        <where>
+            <if test="owner!=null and owner!=''">
+                u.name LIKE CONCAT('%',#{owner},'%')
+            </if>
+            <if test="fullname!=null and fullname!=''">
+                c.fullname LIKE CONCAT('%',#{fullname},'%')
+            </if>
+            <if test="customerId!=null and customerId!=''">
+                c.customerId LIKE CONCAT('%',#{customerId},'%')
+            </if>
+            <if test="source!=null and source!=''">
+                c.source LIKE CONCAT('%',#{source},'%')
+            </if>
+            <if test="birth!=null and birth!=''">
+                c.birth LIKE CONCAT('%',#{birth},'%')
+            </if>
+        </where>
+        ORDER BY c.createTime DESC
+        LIMIT #{pageCount},#{pageSize}
+    </select>
+
+	<insert id="insert">
+        INSERT INTO t_contacts(id,owner,source,customerId,fullname,appellation,email,mphone,job,birth,createBy,createTime,description,contactSummary,nextContactTime,address)
+        VALUES(#{id},#{owner},#{source},#{customerId},#{fullname},#{appellation},#{email},#{mphone},#{job},#{birth},#{createBy},#{createTime},#{description},#{contactSummary},#{nextContactTime},#{address})
+    </insert>
+  	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

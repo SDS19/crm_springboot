@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crm.workbench.dao.ClueRemarkDao">
+
+    <select id="select" resultType="clueRemark">
+        SELECT * FROM t_clue_remark WHERE clueId = #{cludId} ORDER BY createTime DESC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO t_clue_remark(id,noteContent,createBy,createTime,editFlag,clueId)
+        VALUES(#{id},#{noteContent},#{createBy},#{createTime},'0',#{clueId})
+    </insert>
+
+    <update id="update">
+        UPDATE t_clue_remark SET noteContent=#{noteContent},editBy=#{editBy},editTime=#{editTime},editFlag='1' WHERE id=#{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM t_clue_remark WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByClue">
+        DELETE FROM t_clue_remark WHERE clueId IN
+        <foreach collection="array" item="clueId" open="(" separator="," close=")">
+            #{clueId}
+        </foreach>
+    </delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

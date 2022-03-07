@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crm.workbench.dao.ClueDao">
+
+    <select id="total" resultType="int">
+        SELECT COUNT(*) FROM t_clue c JOIN t_user u ON c.owner=u.id
+        <where>
+            <if test="fullname!=null and fullname!=''">
+                c.fullname LIKE CONCAT('%',#{fullname},'%')
+            </if>
+            <if test="company!=null and company!=''">
+                c.company LIKE CONCAT('%',#{company},'%')
+            </if>
+            <if test="phone!=null and phone!=''">
+                c.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="source!=null and source!=''">
+                c.source LIKE CONCAT('%',#{source},'%')
+            </if>
+            <if test="owner!=null and owner!=''">
+                u.name LIKE CONCAT('%',#{owner},'%')
+            </if>
+            <if test="mphone!=null and mphone!=''">
+                c.mphone LIKE CONCAT('%',#{mphone},'%')
+            </if>
+            <if test="state!=null and state!=''">
+                c.state LIKE CONCAT('%',#{state},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="clueList" resultType="clue">
+        SELECT c.id id,c.fullname fullname,c.appellation appellation,c.company company,c.phone phone,c.mphone mphone,c.source source,u.name owner,c.state state FROM t_clue c JOIN t_user u ON c.owner=u.id
+        <where>
+            <if test="fullname!=null and fullname!=''">
+                c.fullname LIKE CONCAT('%',#{fullname},'%')
+            </if>
+            <if test="company!=null and company!=''">
+                c.company LIKE CONCAT('%',#{company},'%')
+            </if>
+            <if test="phone!=null and phone!=''">
+                c.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="source!=null and source!=''">
+                c.source LIKE CONCAT('%',#{source},'%')
+            </if>
+            <if test="owner!=null and owner!=''">
+                u.name LIKE CONCAT('%',#{owner},'%')
+            </if>
+            <if test="mphone!=null and mphone!=''">
+                c.mphone LIKE CONCAT('%',#{mphone},'%')
+            </if>
+            <if test="state!=null and state!=''">
+                c.state LIKE CONCAT('%',#{state},'%')
+            </if>
+        </where>
+        ORDER BY c.createTime DESC
+        LIMIT #{pageCount},#{pageSize}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO t_clue(id,fullname,appellation,owner,company,job,email,phone,website,mphone,state,source,createBy,createTime,description,contactSummary,nextContactTime,address)
+        VALUES(#{id},#{fullname},#{appellation},#{owner},#{company},#{job},#{email},#{phone},#{website},#{mphone},#{state},#{source},#{createBy},#{createTime},#{description},#{contactSummary},#{nextContactTime},#{address})
+    </insert>
+
+    <select id="detail" resultType="clue">
+        SELECT c.id id,
+               c.fullname fullname,
+               c.appellation appellation,
+               u.name owner,
+               c.company company,
+               c.job job,
+               c.email email,
+               c.phone phone,
+               c.website website,
+               c.mphone mphone,
+               c.state state,
+               c.source source,
+               c.createBy createBy,
+               c.createTime createTime,
+               c.editBy editBy,
+               c.editTime editTime,
+               c.description description,
+               c.contactSummary contactSummary,
+               c.nextContactTime nextContactTime,
+               c.address address
+        FROM t_clue c JOIN t_user u ON c.owner=u.id WHERE c.id = #{id}
+    </select>
+
+    <select id="edit" resultType="clue">
+        SELECT * FROM t_clue WHERE id = #{id}
+    </select>
+
+    <update id="update">
+        UPDATE t_clue
+        SET owner=#{owner},company=#{company},appellation=#{appellation},fullname=#{fullname},job=#{job},email=#{email},
+            phone=#{phone},website=#{website},mphone=#{mphone},state=#{state},source=#{source},editBy=#{editBy},editTime=#{editTime},
+            description=#{description},contactSummary=#{contactSummary},nextContactTime=#{nextContactTime},address=#{address}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM t_clue WHERE id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getClueById" resultType="clue">
+        SELECT * FROM t_clue WHERE id = #{id}
+    </select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

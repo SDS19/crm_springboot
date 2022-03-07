@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crm.workbench.dao.CustomerDao">
+
+    <select id="total" resultType="int">
+        SELECT COUNT(*) FROM t_customer c JOIN t_user u ON c.owner=u.id
+        <where>
+            <if test="name!=null and name!=''">
+                c.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="owner!=null and owner!=''">
+                u.name LIKE CONCAT('%',#{owner},'%')
+            </if>
+            <if test="phone!=null and phone!=''">
+                c.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="website!=null and website!=''">
+                c.website LIKE CONCAT('%',#{website},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="customerList" resultType="customer">
+        SELECT c.id,c.name,u.name owner,c.phone,c.website FROM t_customer c JOIN t_user u ON c.owner=u.id
+        <where>
+            <if test="name!=null and name!=''">
+                c.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="owner!=null and owner!=''">
+                u.name LIKE CONCAT('%',#{owner},'%')
+            </if>
+            <if test="phone!=null and phone!=''">
+                c.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="website!=null and website!=''">
+                c.website LIKE CONCAT('%',#{website},'%')
+            </if>
+        </where>
+        ORDER BY c.createTime DESC
+        LIMIT #{pageCount},#{pageSize}
+    </select>
+
+	<select id="select" resultType="customer">
+        SELECT * FROM t_customer WHERE name = #{name}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO t_customer(id,owner,name,website,phone,createBy,createTime,contactSummary,nextContactTime,description,address)
+        VALUES(#{id},#{owner},#{name},#{website},#{phone},#{createBy},#{createTime},#{contactSummary},#{nextContactTime},#{description},#{address})
+    </insert>
+
+    <select id="selectName" resultType="string">
+        SELECT name from t_customer WHERE name LIKE CONCAT('%',#{name},'%')
+    </select>
+  	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crm.workbench.dao.TranDao">
+
+    <select id="total" resultType="int">
+        SELECT COUNT(*) FROM t_tran t JOIN t_user u ON t.owner=u.id
+                                      JOIN t_customer c ON t.customerId=c.id
+                                      LEFT JOIN t_contacts s ON t.contactsId=s.id
+        <where>
+            <if test="owner!=null and owner!=''">
+                u.name LIKE CONCAT('%',#{owner},'%')
+            </if>
+            <if test="name!=null and name!=''">
+                t.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="customerId!=null and customerId!=''">
+                c.name LIKE CONCAT('%',#{customerId},'%')
+            </if>
+            <if test="stage!=null and stage!=''">
+                t.stage LIKE CONCAT('%',#{stage},'%')
+            </if>
+            <if test="type!=null and type!=''">
+                t.type LIKE CONCAT('%',#{type},'%')
+            </if>
+            <if test="source!=null and source!=''">
+                t.source LIKE CONCAT('%',#{source},'%')
+            </if>
+            <if test="contactsId!=null and contactsId!=''">
+                s.fullname LIKE CONCAT('%',#{contactsId},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="tranList" resultType="tran">
+        SELECT
+               t.id,
+               t.name,
+               c.name customerId,
+               t.stage,
+               t.type,
+               u.name owner,
+               t.source,
+               s.fullname contactsId
+        FROM t_tran t JOIN t_user u ON t.owner=u.id
+                      JOIN t_customer c ON t.customerId=c.id
+                      LEFT JOIN t_contacts s ON t.contactsId=s.id
+        <where>
+            <if test="owner!=null and owner!=''">
+                u.name LIKE CONCAT('%',#{owner},'%')
+            </if>
+            <if test="name!=null and name!=''">
+                t.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="customerId!=null and customerId!=''">
+                c.name LIKE CONCAT('%',#{customerId},'%')
+            </if>
+            <if test="stage!=null and stage!=''">
+                t.stage LIKE CONCAT('%',#{stage},'%')
+            </if>
+            <if test="type!=null and type!=''">
+                t.type LIKE CONCAT('%',#{type},'%')
+            </if>
+            <if test="source!=null and source!=''">
+                t.source LIKE CONCAT('%',#{source},'%')
+            </if>
+            <if test="contactsId!=null and contactsId!=''">
+                s.fullname LIKE CONCAT('%',#{contactsId},'%')
+            </if>
+        </where>
+        ORDER BY t.createTime DESC
+        LIMIT #{pageCount},#{pageSize}
+    </select>
+
+	<insert id="insert">
+        INSERT INTO t_tran(id,owner,money,name,expectedDate,customerId,stage,type,source,activityId,contactsId,createBy,createTime,description,contactSummary,nextContactTime)
+        VALUES(#{id},#{owner},#{money},#{name},#{expectedDate},#{customerId},#{stage},#{type},#{source},#{activityId},#{contactsId},#{createBy},#{createTime},#{description},#{contactSummary},#{nextContactTime})
+    </insert>
+
+    <select id="select" resultType="tran">
+        SELECT
+            t.id,
+            u.name owner,
+            t.money,
+            t.name,
+            t.expectedDate,
+            c.name customerId,
+            t.stage,
+            t.type,
+            t.source,
+            a.name activityId,
+            s.fullname contactsId,
+            t.createBy,
+            t.createTime,
+            t.editBy,
+            t.editTime,
+            t.description,
+            t.contactSummary,
+            t.nextContactTime
+        FROM t_tran t JOIN t_user u ON t.owner = u.id
+                      JOIN t_customer c ON t.customerId = c.id
+                      LEFT JOIN t_activity a ON t.activityId = a.id
+                      LEFT JOIN t_contacts s ON t.contactsId = s.id
+        WHERE t.id = #{id}
+    </select>
+
+  	<update id="update">
+        UPDATE t_tran SET stage = #{stage}, editBy = #{editBy}, editTime = #{editTime} WHERE id = #{id}
+    </update>
+
+    <select id="max" resultType="int">
+        SELECT COUNT(id) FROM t_tran
+    </select>
+
+    <select id="dataList" resultType="map">
+        SELECT COUNT(*) value, stage name FROM t_tran GROUP BY stage
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
