@@ -79,8 +79,8 @@ public class ActivityController {
         }
     }
 
-    @GetMapping("/detail")
-    public ModelAndView detail(String id) {
+    @GetMapping("/{id}")
+    public ModelAndView detail(@PathVariable String id) {
         ModelAndView mv = new ModelAndView();
         mv.addObject("activity",activityService.detail(id));
         mv.setViewName("workbench/activity/detail");
@@ -89,13 +89,13 @@ public class ActivityController {
 
     /* ========================================== remark controller ========================================== */
 
-    @GetMapping("/remark")
-    public List<ActivityRemark> remarkList(String activityId){
+    @GetMapping("/remark/{activityId}")
+    public List<ActivityRemark> remarkList(@PathVariable String activityId){
         return activityService.select(activityId);
     }
 
-    @DeleteMapping("/remark")
-    public String removeRemark(String id){
+    @DeleteMapping("/remark/{id}")
+    public String removeRemark(@PathVariable String id){
         try {
             activityService.removeRemark(id);
             return "1";

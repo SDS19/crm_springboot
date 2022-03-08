@@ -156,8 +156,7 @@
 
 	function remarkList() {
 		$.ajax({
-			url: "activity/remark",
-			data: { "activityId": "${activity.id}" },
+			url: "activity/remark/${activity.id}",
 			type: "get",
 			dataType: "json",
 			success: function (data) {
@@ -218,8 +217,7 @@
     //remove remark
 	function remove(id) {
         $.ajax({
-            url: "activity/remark",
-            data: { "id": id },
+            url: "activity/remark/"+id,
             type: "delete",
             dataType: "json",
             success: function (data) {

@@ -164,7 +164,7 @@
 						var html = "";
 						$.each(data.dataList,function (i,obj) {
 							html += "<tr class='active'><td><input name='check' type='checkbox' value='"+obj.id+"'/></td>"
-									+"<td><a style='text-decoration: none; cursor: pointer;' onclick=window.location.href=\'activity/detail?id="+obj.id+"\';>"+obj.name+"</a></td>"
+									+"<td><a style='text-decoration: none; cursor: pointer;' onclick=window.location.href=\'activity/"+obj.id+"\';>"+obj.name+"</a></td>"
 									+"<td>"+obj.owner+"</td>"
 									+"<td>"+obj.startDate+"</td>"
 									+"<td>"+obj.endDate+"</td></tr>";
