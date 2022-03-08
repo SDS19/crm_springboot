@@ -7,7 +7,6 @@
 <head>
 	<base href="<%=base%>">
 	<meta charset="UTF-8">
-
 	<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 	<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
 	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
@@ -54,7 +53,7 @@
 			//create
 			$("#addBtn").click(function () {
 				$.ajax({
-					url:"user/owner",
+					url:"owner",
 					type:"get",
 					dataType:"json",
 					success:function (data) {
@@ -136,9 +135,9 @@
 							if (i<checked.length-1) params += "&";
 						}
 						$.ajax({
-							url:"clue/delete",
+							url:"clue",
 							data: params,
-							type:"post",
+							type:"delete",
 							dataType:"json",
 							success:function (data) {
 								if (data=="1") {
@@ -164,7 +163,7 @@
 			$("#mphone").val($.trim($("#hid-mphone").val()));
 			$("#state").val($.trim($("#hid-state").val()));
 			$.ajax({
-				url:"clue/clues",
+				url:"clue",
 				data: {
 					"pageNo":pageNo,
 					"pageSize":pageSize,
@@ -183,7 +182,7 @@
 						var html = "";
 						$.each(data.dataList,function (i,obj) {
 							html += "<tr><td><input name='check' type='checkbox' value='"+obj.id+"'/></td>"
-									+"<td><a style='text-decoration: none; cursor: pointer;' onclick=window.location.href=\'clue/detail?id="+obj.id+"\';>"+obj.appellation+obj.fullname+"</a></td>"
+									+"<td><a style='text-decoration: none; cursor: pointer;' onclick=window.location.href=\'clue/"+obj.id+"\';>"+obj.appellation+obj.fullname+"</a></td>"
 									+"<td>"+obj.company+"</td>"
 									+"<td>"+obj.phone+"</td>"
 									+"<td>"+obj.mphone+"</td>"
@@ -223,7 +222,7 @@
 
 		function create() {
 			$.ajax({
-				url:"clue/save",
+				url:"clue",
 				data:{
 					"fullname":$.trim($("#create-fullname").val()),
 					"appellation":$.trim($("#create-appellation").val()),
@@ -255,7 +254,7 @@
 
 		function update() {
 			$.ajax({
-				url:"clue/update",
+				url:"clue",
 				data: {
 					"id":$("#edit-id").val(),
 					"owner":$.trim($("#edit-owner").val()),
@@ -272,7 +271,8 @@
 					"description":$.trim($("#edit-description").val()),
 					"contactSummary":$.trim($("#edit-contactSummary").val()),
 					"nextContactTime":$.trim($("#edit-nextContactTime").val()),
-					"address":$.trim($("#edit-address").val())
+					"address":$.trim($("#edit-address").val()),
+					"_method":"put"
 				},
 				type:"post",
 				dataType:"json",

@@ -34,23 +34,18 @@
 		$(".remarkDiv").mouseover(function(){
 			$(this).children("div").children("div").show();
 		});
-
 		$(".remarkDiv").mouseout(function(){
 			$(this).children("div").children("div").hide();
 		});
-		
 		$(".myHref").mouseover(function(){
 			$(this).children("span").css("color","red");
 		});
-
 		$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
 		});
-
 		$("#remarkBody").on("mouseover",".remarkDiv",function(){
 			$(this).children("div").children("div").show();
 		})
-
 		$("#remarkBody").on("mouseout",".remarkDiv",function(){
 			$(this).children("div").children("div").hide();
 		})
@@ -61,7 +56,7 @@
 
 		$("#saveRemarkBtn").click(function () {
 			$.ajax({
-				url: "clue/addRemark",
+				url: "clue/remark",
 				data: {
 					"noteContent":$.trim($("#remark").val()),
 					"clueId":"${clue.id}"
@@ -78,10 +73,11 @@
 		$("#updateRemarkBtn").click(function () {
 			var id = $("#remarkId").val();
 			$.ajax({
-				url: "clue/updateRemark",
+				url: "clue/remark",
 				data: {
 					"id": id,
-					"noteContent":$.trim($("#noteContent").val())
+					"noteContent":$.trim($("#noteContent").val()),
+					"_method":"put"
 				},
 				type: "post",
 				dataType: "json",
@@ -109,13 +105,10 @@
 		})
 
 		$("#search-activity").keydown(function (event) {
+			var name = $.trim($("#search-activity").val());
 			if (event.keyCode==13) {
 				$.ajax({
-					url: "clue/search",
-					data: {
-						"name": $.trim($("#search-activity").val()),
-						"clueId": "${clue.id}"
-					},
+					url: "clue/${clue.id}/"+name,
 					type: "get",
 					dataType: "json",
 					success: function (data) {
@@ -144,7 +137,7 @@
 					param += "&activityId="+activity.value
 				})
 				$.ajax({
-					url: "clue/bind",
+					url: "clue/activity",
 					data: param,
 					type: "post",
 					dataType: "text",
@@ -162,7 +155,7 @@
 
 		$("#editBtn").click(function () {
 			$.ajax({
-				url: "user/owner",
+				url: "owner",
 				type: "get",
 				dataType: "json",
 				success: function (data) {
@@ -193,9 +186,9 @@
 		$("#deleteBtn").click(function () {
 			if (confirm("Are you sure to delete activity?")) {
 				$.ajax({
-					url: "clue/delete",
+					url: "clue",
 					data: { "id" : "${clue.id}" },
-					type: "post",
+					type: "delete",
 					dataType: "json",
 					success: function (data) {
 						if (data=="1") window.location.href = "workbench/clue/index.jsp";
@@ -234,7 +227,7 @@
 
 	function update() {
 		$.ajax({
-			url:"clue/update",
+			url:"clue",
 			data: {
 				"id":$("#edit-id").val(),
 				"owner":$.trim($("#edit-owner").val()),
@@ -251,14 +244,15 @@
 				"description":$.trim($("#edit-description").val()),
 				"contactSummary":$.trim($("#edit-contactSummary").val()),
 				"nextContactTime":$.trim($("#edit-nextContactTime").val()),
-				"address":$.trim($("#edit-address").val())
+				"address":$.trim($("#edit-address").val()),
+				"_method":"put"
 			},
 			type:"post",
 			dataType:"json",
 			success:function (data) {
 				if (data=="1") {
 					alert("Clue update succeed!");
-					window.location.href = "clue/detail?id=${clue.id}";
+					window.location.href = "clue/${clue.id}";
 				} else alert("Clue update failed!");
 			}
 		})
@@ -266,9 +260,9 @@
 
 	function unbind(id) {
 		$.ajax({
-			url: "clue/unbind",
+			url: "clue/activity",
 			data: { "id": id },
-			type: "post",
+			type: "delete",
 			dataType: "text",
 			success: function (data) {
 				if (data=="1") activityList();
@@ -315,9 +309,9 @@
 
 	function remove(id) {
 		$.ajax({
-			url: "clue/removeRemark",
+			url: "clue/remark",
 			data: { "id": id },
-			type: "post",
+			type: "delete",
 			dataType: "json",
 			success: function (data) {
 				if (data=="1") $("#"+id).remove();
