@@ -23,7 +23,7 @@
         </where>
     </select>
 
-    <select id="customerList" resultType="customer">
+    <select id="customerList" resultType="com.crm.workbench.domain.Customer">
         SELECT c.id,c.name,u.name owner,c.phone,c.website FROM t_customer c JOIN t_user u ON c.owner=u.id
         <where>
             <if test="name!=null and name!=''">
@@ -43,7 +43,7 @@
         LIMIT #{pageCount},#{pageSize}
     </select>
 
-	<select id="select" resultType="customer">
+	<select id="select" resultType="com.crm.workbench.domain.Customer">
         SELECT * FROM t_customer WHERE name = #{name}
     </select>
 

@@ -32,7 +32,7 @@
         </where>
     </select>
 
-    <select id="clueList" resultType="clue">
+    <select id="clueList" resultType="com.crm.workbench.domain.Clue">
         SELECT c.id id,c.fullname fullname,c.appellation appellation,c.company company,c.phone phone,c.mphone mphone,c.source source,u.name owner,c.state state FROM t_clue c JOIN t_user u ON c.owner=u.id
         <where>
             <if test="fullname!=null and fullname!=''">
@@ -66,7 +66,7 @@
         VALUES(#{id},#{fullname},#{appellation},#{owner},#{company},#{job},#{email},#{phone},#{website},#{mphone},#{state},#{source},#{createBy},#{createTime},#{description},#{contactSummary},#{nextContactTime},#{address})
     </insert>
 
-    <select id="detail" resultType="clue">
+    <select id="detail" resultType="com.crm.workbench.domain.Clue">
         SELECT c.id id,
                c.fullname fullname,
                c.appellation appellation,
@@ -90,7 +90,7 @@
         FROM t_clue c JOIN t_user u ON c.owner=u.id WHERE c.id = #{id}
     </select>
 
-    <select id="edit" resultType="clue">
+    <select id="edit" resultType="com.crm.workbench.domain.Clue">
         SELECT * FROM t_clue WHERE id = #{id}
     </select>
 
@@ -109,7 +109,7 @@
         </foreach>
     </delete>
 
-    <select id="getClueById" resultType="clue">
+    <select id="getClueById" resultType="com.crm.workbench.domain.Clue">
         SELECT * FROM t_clue WHERE id = #{id}
     </select>
 

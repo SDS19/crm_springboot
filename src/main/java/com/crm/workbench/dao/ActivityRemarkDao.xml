@@ -17,7 +17,7 @@
         </foreach>
     </delete>
 
-    <select id="select" resultType="activityRemark">
+    <select id="select" resultType="com.crm.workbench.domain.ActivityRemark">
         SELECT * FROM t_activity_remark WHERE activityId = #{activityId} ORDER BY createTime DESC
     </select>
 

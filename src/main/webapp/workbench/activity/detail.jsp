@@ -71,7 +71,7 @@
         $("#editBtn").click(function () {
             var id = "id=${activity.id}";
             $.ajax({
-                url:"user/owner",
+                url:"owner",
                 type:"get",
                 dataType:"json",
                 success:function (data) {
@@ -88,7 +88,6 @@
             })
         })
 		$("#updateBtn").click(function () { update(); })
-
 		$(window).keydown(function (event) {
 			if (event.keyCode==13) {
 				update();
@@ -100,9 +99,9 @@
 		$("#deleteBtn").click(function () {
 			if (confirm("Are you sure to delete activity?")) {
 				$.ajax({
-					url:"activity/delete",
+					url:"activity",
 					data: { "id" : "${activity.id}" },
-					type:"post",
+					type:"delete",
 					dataType:"json",
 					success:function (data) {
 						if (data=="1") window.location.href = "workbench/activity/index.jsp";
@@ -115,7 +114,7 @@
         //add remark
         $("#saveRemarkBtn").click(function () {
             $.ajax({
-                url: "activity/addRemark",
+                url: "activity/remark",
                 data: {
                     "noteContent":$.trim($("#remark").val()),
                     "activityId":"${activity.id}"
@@ -133,10 +132,11 @@
         $("#updateRemarkBtn").click(function () {
             var id = $("#remarkId").val();
             $.ajax({
-                url: "activity/updateRemark",
+                url: "activity/remark",
                 data: {
                     "id": id,
-                    "noteContent":$.trim($("#noteContent").val())
+                    "noteContent":$.trim($("#noteContent").val()),
+					"_method":"put"
                 },
                 type: "post",
                 dataType: "json",
@@ -156,7 +156,7 @@
 
 	function remarkList() {
 		$.ajax({
-			url: "activity/remarks",
+			url: "activity/remark",
 			data: { "activityId": "${activity.id}" },
 			type: "get",
 			dataType: "json",
@@ -185,7 +185,7 @@
 	//update activity
 	function update() {
 		$.ajax({
-			url:"activity/update",
+			url:"activity",
 			data: {
 				"id":$.trim($("#edit-id").val()),
 				"owner":$.trim($("#edit-owner").val()),
@@ -193,7 +193,8 @@
 				"startDate":$.trim($("#edit-startDate").val()),
 				"endDate":$.trim($("#edit-endDate").val()),
 				"cost":$.trim($("#edit-cost").val()),
-				"description":$.trim($("#edit-description").val())
+				"description":$.trim($("#edit-description").val()),
+				"_method":"put"
 			},
 			type:"post",
 			dataType:"json",
@@ -217,9 +218,9 @@
     //remove remark
 	function remove(id) {
         $.ajax({
-            url: "activity/removeRemark",
+            url: "activity/remark",
             data: { "id": id },
-            type: "post",
+            type: "delete",
             dataType: "json",
             success: function (data) {
                 if (data=="1") $("#"+id).remove();

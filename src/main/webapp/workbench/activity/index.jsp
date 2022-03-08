@@ -51,7 +51,7 @@
 			//create
 			$("#addBtn").click(function () {//get owner name
 				$.ajax({
-					url:"user/owner",
+					url:"owner",
 					type:"get",
 					dataType:"json",
 					success:function (data) {
@@ -124,9 +124,9 @@
 							//if (i<checked.length-1) params += "&";
 						}
 						$.ajax({
-							url:"activity/delete",
+							url:"activity",
 							data: params,
-							type:"post",
+							type:"delete",
 							dataType:"json",
 							success:function (data) {
 								if (data=="1") pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
@@ -148,7 +148,7 @@
 			$("#startDate").val($.trim($("#hid-startDate").val()));
 			$("#endDate").val($.trim($("#hid-endDate").val()));
 			$.ajax({
-				url:"activity/activities",
+				url:"activity",
 				data: {
 					"pageNo":pageNo,
 					"pageSize":pageSize,
@@ -201,7 +201,7 @@
 
 		function create() {
 			$.ajax({
-				url:"activity/save",
+				url:"activity",
 				data:{
 					"owner":$.trim($("#create-owner").val()),
 					"name":$.trim($("#create-name").val()),
@@ -226,7 +226,7 @@
 
 		function update() {
 			$.ajax({
-				url:"activity/update",
+				url:"activity",
 				data: {
 					"id":$.trim($("#edit-id").val()),
 					"owner":$.trim($("#edit-owner").val()),
@@ -234,7 +234,8 @@
 					"startDate":$.trim($("#edit-startDate").val()),
 					"endDate":$.trim($("#edit-endDate").val()),
 					"cost":$.trim($("#edit-cost").val()),
-					"description":$.trim($("#edit-description").val())
+					"description":$.trim($("#edit-description").val()),
+					"_method":"put"
 				},
 				type:"post",
 				dataType:"json",

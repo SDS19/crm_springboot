@@ -26,7 +26,7 @@
         </where>
     </select>
 
-    <select id="contactsList" resultType="contacts">
+    <select id="contactsList" resultType="com.crm.workbench.domain.Contacts">
         SELECT c.id,c.fullname,s.name customerId,u.name owner,c.source,c.birth
         FROM t_contacts c JOIN t_user u ON c.owner=u.id
                           JOIN t_customer s ON c.customerId=s.id

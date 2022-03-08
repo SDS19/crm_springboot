@@ -34,7 +34,7 @@
         </where>
     </select>
 
-    <select id="tranList" resultType="tran">
+    <select id="tranList" resultType="com.crm.workbench.domain.Tran">
         SELECT
                t.id,
                t.name,
@@ -79,7 +79,7 @@
         VALUES(#{id},#{owner},#{money},#{name},#{expectedDate},#{customerId},#{stage},#{type},#{source},#{activityId},#{contactsId},#{createBy},#{createTime},#{description},#{contactSummary},#{nextContactTime})
     </insert>
 
-    <select id="select" resultType="tran">
+    <select id="select" resultType="com.crm.workbench.domain.Tran">
         SELECT
             t.id,
             u.name owner,

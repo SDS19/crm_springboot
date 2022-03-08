@@ -8,25 +8,23 @@ import com.crm.vo.Pagination;
 import com.crm.workbench.domain.Activity;
 import com.crm.workbench.domain.ActivityRemark;
 import com.crm.workbench.service.ActivityService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/activity")
 public class ActivityController {
-    @Autowired
+
+    @Resource
     private ActivityService activityService;
 
     /* ========================================= activity controller ========================================= */
 
-    @RequestMapping("/activities")
-    @ResponseBody
+    @GetMapping
     public Pagination<Activity> activityList(Integer pageNo, Integer pageSize, Activity activity){
         activity.setPageCount((pageNo-1)*pageSize);
         try {
@@ -37,8 +35,7 @@ public class ActivityController {
         }
     }
 
-    @RequestMapping("/save")
-    @ResponseBody
+    @PostMapping
     public String save(HttpServletRequest request, Activity activity){
         activity.setId(UUIDUtil.getUUID());
         activity.setCreateTime(DateTimeUtil.getSysTime());
@@ -52,8 +49,7 @@ public class ActivityController {
         }
     }
 
-    @RequestMapping("/delete")
-    @ResponseBody
+    @DeleteMapping
     public String delete(HttpServletRequest request) {
         String[] ids = request.getParameterValues("id");
         try {
@@ -65,14 +61,12 @@ public class ActivityController {
         }
     }
 
-    @RequestMapping("/edit")
-    @ResponseBody
+    @GetMapping("/edit")
     public Map<String,Object> edit(String id){
         return activityService.edit(id);
     }
 
-    @RequestMapping("/update")
-    @ResponseBody
+    @PutMapping
     public String update(HttpServletRequest request,Activity activity){
         activity.setEditTime(DateTimeUtil.getSysTime());
         activity.setEditBy(((User)request.getSession(false).getAttribute("user")).getName());
@@ -85,7 +79,7 @@ public class ActivityController {
         }
     }
 
-    @RequestMapping("/detail")
+    @GetMapping("/detail")
     public ModelAndView detail(String id) {
         ModelAndView mv = new ModelAndView();
         mv.addObject("activity",activityService.detail(id));
@@ -95,14 +89,12 @@ public class ActivityController {
 
     /* ========================================== remark controller ========================================== */
 
-    @RequestMapping("/remarks")
-    @ResponseBody
+    @GetMapping("/remark")
     public List<ActivityRemark> remarkList(String activityId){
         return activityService.select(activityId);
     }
 
-    @RequestMapping("/removeRemark")
-    @ResponseBody
+    @DeleteMapping("/remark")
     public String removeRemark(String id){
         try {
             activityService.removeRemark(id);
@@ -113,8 +105,7 @@ public class ActivityController {
         }
     }
 
-    @RequestMapping("/addRemark")
-    @ResponseBody
+    @PostMapping("/remark")
     public Object addRemark(HttpServletRequest request, ActivityRemark remark){
         remark.setId(UUIDUtil.getUUID());
         remark.setCreateTime(DateTimeUtil.getSysTime());
@@ -128,8 +119,7 @@ public class ActivityController {
         }
     }
 
-    @RequestMapping("/updateRemark")
-    @ResponseBody
+    @PutMapping("/remark")
     public Object updateRemark(HttpServletRequest request, ActivityRemark remark){
         remark.setEditTime(DateTimeUtil.getSysTime());
         remark.setEditBy(((User) request.getSession(false).getAttribute("user")).getName());

@@ -5,7 +5,7 @@
 
 <mapper namespace="com.crm.workbench.dao.ClueRemarkDao">
 
-    <select id="select" resultType="clueRemark">
+    <select id="select" resultType="com.crm.workbench.domain.ClueRemark">
         SELECT * FROM t_clue_remark WHERE clueId = #{cludId} ORDER BY createTime DESC
     </select>
 

@@ -27,7 +27,7 @@
         </where>
     </select>
 
-    <select id="activityList" resultType="activity">
+    <select id="activityList" resultType="com.crm.workbench.domain.Activity">
         SELECT a.id id,a.name name,u.name owner,a.startDate startDate,a.endDate endDate FROM t_activity a JOIN t_user u ON a.owner=u.id
         <where>
             <if test="name!=null and name!=''">
@@ -54,7 +54,7 @@
         </foreach>
     </delete>
 
-    <select id="edit" resultType="activity">
+    <select id="edit" resultType="com.crm.workbench.domain.Activity">
         SELECT * FROM t_activity WHERE id = #{id}
     </select>
 
@@ -64,20 +64,20 @@
         WHERE id = #{id}
     </update>
 
-    <select id="selectById" resultType="activity">
+    <select id="selectById" resultType="com.crm.workbench.domain.Activity">
         SELECT a.id id,u.name owner,a.name name,a.startDate startDate,a.endDate endDate,a.cost cost,
                a.description description,a.createTime createTime,a.createBy createBy,a.editTime editTime,a.editBy editBy
         FROM t_activity a JOIN t_user u ON a.owner=u.id
         WHERE a.id = #{id}
     </select>
 
-    <select id="selectByClueId" resultType="activity">
+    <select id="selectByClueId" resultType="com.crm.workbench.domain.Activity">
         SELECT c.id id,a.name name,a.startDate startDate,a.endDate endDate,u.name owner
         FROM t_activity a JOIN t_user u ON a.owner=u.id JOIN t_clue_activity_relation c ON a.id=c.activityId
         WHERE c.clueId = #{clueId}
     </select>
 
-    <select id="selectByNameForClue" resultType="activity">
+    <select id="selectByNameForClue" resultType="com.crm.workbench.domain.Activity">
         SELECT
             a.id id,a.name name,a.startDate startDate,a.endDate endDate,u.name owner
         FROM t_activity a JOIN t_user u ON a.owner=u.id
@@ -85,7 +85,7 @@
           AND a.id NOT IN (SELECT activityId FROM t_clue_activity_relation WHERE clueId = #{clueId})
     </select>
 
-    <select id="selectByNameForTran" resultType="activity">
+    <select id="selectByNameForTran" resultType="com.crm.workbench.domain.Activity">
         SELECT
             a.id id,a.name name,a.startDate startDate,a.endDate endDate,u.name owner
         FROM t_activity a JOIN t_user u ON a.owner=u.id

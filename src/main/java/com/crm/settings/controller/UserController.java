@@ -18,8 +18,7 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @PostMapping
-    @RequestMapping("/user")
+    @PostMapping("/user")
     public Map<String,String> signin(HttpServletRequest request,User user) {
         user.setLoginPwd(MD5Util.getMD5(user.getLoginPwd()));
         user.setAllowIps(request.getRemoteAddr());
@@ -41,8 +40,7 @@ public class UserController {
         return userService.owner();
     }
 
-    @GetMapping
-    @RequestMapping("/user")
+    @GetMapping("/user")
     public void signout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.getSession().invalidate();
         response.sendRedirect("login.jsp");

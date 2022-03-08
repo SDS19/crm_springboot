@@ -16,7 +16,7 @@
         </foreach>
     </delete>
 
-    <select id="getActiviesByclueId" resultType="clueActivityRelation">
+    <select id="getActiviesByclueId" resultType="com.crm.workbench.domain.ClueActivityRelation">
         SELECT * FROM t_clue_activity_relation WHERE clueId = #{clueId}
     </select>
 

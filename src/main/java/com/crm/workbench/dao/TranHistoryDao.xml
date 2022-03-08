@@ -9,7 +9,7 @@
         INSERT INTO t_tran_history VALUES(#{id},#{stage},#{money},#{expectedDate},#{createTime},#{createBy},#{tranId})
     </insert>
 
-    <select id="select" resultType="tranHistory">
+    <select id="select" resultType="com.crm.workbench.domain.TranHistory">
         SELECT * FROM t_tran_history WHERE tranId = #{tranId} ORDER BY createTime DESC
     </select>
   	
