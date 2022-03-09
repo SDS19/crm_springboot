@@ -10,6 +10,8 @@
 	<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
 	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 	<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 	<link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
 	<script type="text/javascript" src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
 	<script type="text/javascript" src="jquery/bs_pagination/en.js"></script>
@@ -21,6 +23,15 @@
 				e.stopPropagation();
 			});*/
 
+			$(".time").datetimepicker({
+				minView: "month",
+				language:  'zh-CN',
+				format: 'yyyy-mm-dd',
+				autoclose: true,
+				todayBtn: true,
+				pickerPosition: "bottom-left"
+			});
+
 			customerList(1,3);
 
 			//checkbox
@@ -29,6 +40,50 @@
 			})
 			$("#tbody-customer").on("click",$("input[name=check]"),function () {
 				$("#checkAll").prop("checked",$("input[name=check]").length==$("input[name=check]:checked").length);
+			})
+
+			$("#createBtn").click(function () {
+				$.ajax({
+					url:"owner",
+					type:"get",
+					dataType:"json",
+					success:function (data) {
+						if (data!=null) {
+							var html = "";
+							$.each(data, function (i, obj) {
+								html += "<option value='"+obj.id+"'>"+obj.name+"</option>";
+							})
+							$("#create-owner").html(html);
+							$("#create-owner").val("${user.id}");
+						}
+					}
+				})
+			})
+			$("#saveBtn").click(function () {
+				$.ajax({
+					url:"customer",
+					data: {
+						"owner":$.trim($("#create-owner").val()),
+						"name":$.trim($("#create-name").val()),
+						"website":$.trim($("#create-website").val()),
+						"phone":$.trim($("#create-phone").val()),
+						"description":$.trim($("#create-description").val()),
+						"contactSummary":$.trim($("#create-contactSummary").val()),
+						"nextContactTime":$.trim($("#create-nextContactTime").val()),
+						"address":$.trim($("#create-address").val())
+					},
+					type:"post",
+					dataType:"json",
+					success:function (data) {
+						if (data=="1") {
+							customerList(1,$("#customerPage").bs_pagination('getOption', 'rowsPerPage'));
+							$("#create-form")[0].reset();
+							$("#createCustomerModal").modal("hide");
+						} else alert("Create customer failed!");
+							$("#create-owner").html(html);
+							$("#create-owner").val("${user.id}");
+					}
+				})
 			})
 		
 		});
@@ -40,7 +95,7 @@
 			$("#phone").val($.trim($("#hid-phone").val()));
 			$("#website").val($.trim($("#hid-website").val()));
 			$.ajax({
-				url:"customer/customers",
+				url:"customer",
 				data:{
 					"pageNo":pageNo,
 					"pageSize":pageSize,
@@ -81,13 +136,13 @@
 						});
 					} else alert("Customers query failed!");
 				},
-				error:function (XMLHttpRequest,textStatus) {
+				/*error:function (XMLHttpRequest,textStatus) {
 					var redirect = XMLHttpRequest.getResponseHeader("x-Redirect");
 					if (redirect=="true") {
 						alert("Please login!");
 						window.location.href = XMLHttpRequest.getResponseHeader("x-Path");
 					}
-				}
+				}*/
 			})
 		}
 
@@ -113,35 +168,33 @@
 					<h4 class="modal-title" id="myModalLabel1">Create Customer</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form">
+					<form id="create-form" class="form-horizontal" role="form">
 					
 						<div class="form-group">
-							<label for="create-customerOwner" class="col-sm-2 control-label">owner<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-owner" class="col-sm-2 control-label">owner<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-customerOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+								<select class="form-control" id="create-owner">
+
 								</select>
 							</div>
-							<label for="create-customerName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-name" class="col-sm-2 control-label">Name<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-customerName">
+								<input type="text" class="form-control" id="create-name">
 							</div>
 						</div>
 						
 						<div class="form-group">
-                            <label for="create-website" class="col-sm-2 control-label">公司网站</label>
+                            <label for="create-website" class="col-sm-2 control-label">Website</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="create-website">
                             </div>
-							<label for="create-phone" class="col-sm-2 control-label">公司座机</label>
+							<label for="create-phone" class="col-sm-2 control-label">Phone</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-phone">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">描述</label>
+							<label for="create-describe" class="col-sm-2 control-label">Description</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<textarea class="form-control" rows="3" id="create-describe"></textarea>
 							</div>
@@ -150,15 +203,15 @@
 
                         <div style="position: relative;top: 15px;">
                             <div class="form-group">
-                                <label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
+                                <label for="create-contactSummary" class="col-sm-2 control-label">Contact Summary</label>
                                 <div class="col-sm-10" style="width: 81%;">
                                     <textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
+                                <label for="create-nextContactTime" class="col-sm-2 control-label">Next Contact Time</label>
                                 <div class="col-sm-10" style="width: 300px;">
-                                    <input type="text" class="form-control" id="create-nextContactTime">
+                                    <input type="text" class="form-control time" id="create-nextContactTime" readonly>
                                 </div>
                             </div>
                         </div>
@@ -167,7 +220,7 @@
 
                         <div style="position: relative;top: 20px;">
                             <div class="form-group">
-                                <label for="create-address1" class="col-sm-2 control-label">详细地址</label>
+                                <label for="create-address1" class="col-sm-2 control-label">Address</label>
                                 <div class="col-sm-10" style="width: 81%;">
                                     <textarea class="form-control" rows="1" id="create-address1"></textarea>
                                 </div>
@@ -177,8 +230,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button id="saveBtn" type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
 				</div>
 			</div>
 		</div>
@@ -267,10 +320,7 @@
 			</div>
 		</div>
 	</div>
-	
-	
-	
-	
+
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
@@ -320,9 +370,9 @@
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCustomerModal"><span class="glyphicon glyphicon-plus"></span> Create</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span class="glyphicon glyphicon-pencil"></span> Update</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> Delete</button>
+				  <button id="createBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCustomerModal"><span class="glyphicon glyphicon-plus"></span> Create</button>
+				  <button id="updateBtn" type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span class="glyphicon glyphicon-pencil"></span> Update</button>
+				  <button id="deleteBtn" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> Delete</button>
 				</div>
 				
 			</div>
