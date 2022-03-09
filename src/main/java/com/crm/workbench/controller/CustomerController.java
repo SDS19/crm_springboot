@@ -5,14 +5,14 @@ import com.crm.settings.domain.User;
 import com.crm.utils.DateTimeUtil;
 import com.crm.utils.UUIDUtil;
 import com.crm.vo.Pagination;
+import com.crm.workbench.domain.Activity;
 import com.crm.workbench.domain.Customer;
 import com.crm.workbench.service.CustomerService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/customer")
@@ -46,5 +46,21 @@ public class CustomerController {
         }
     }
 
+    @GetMapping("/{id}")
+    public Map<String,Object> edit(@PathVariable String id){
+        return customerService.edit(id);
+    }
 
+    @PutMapping
+    public String update(HttpServletRequest request, Customer customer){
+        customer.setEditTime(DateTimeUtil.getSysTime());
+        customer.setEditBy(((User)request.getSession().getAttribute("user")).getName());
+        try {
+            customerService.update(customer);
+            return "1";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+    }
 }

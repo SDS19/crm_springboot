@@ -5,6 +5,7 @@ import com.crm.vo.Pagination;
 import com.crm.workbench.domain.Customer;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CustomerService {
 
@@ -13,4 +14,8 @@ public interface CustomerService {
     List<String> autoComplete(String name);
 
     void create(Customer customer) throws DaoException;
+
+    Map<String, Object> edit(String id);
+
+    void update(Customer customer) throws DaoException;
 }

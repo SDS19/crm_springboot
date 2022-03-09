@@ -85,6 +85,65 @@
 					}
 				})
 			})
+
+			$("#editBtn").click(function () {
+				var $checked = $("input[name=check]:checked");
+				if ($checked.length==0) {
+					alert("None customer is selected!")
+				}else if ($checked.length>1){
+					alert("Only can update one customer a time!")
+				}else {
+					$.ajax({
+						url:"customer/"+$checked.val(),
+						type:"get",
+						dataType:"json",
+						success:function (data) {
+							var html = "<option></option>";
+							$.each(data.owner,function (i,obj) {
+								html += "<option value='"+obj.id+"'>"+obj.name+"</option>";
+							})
+							$("#edit-owner").html(html);
+							$("#edit-id").val(data.customer.id);
+							$("#edit-owner").val(data.customer.owner);
+							$("#edit-name").val(data.customer.name);
+							$("#edit-website").val(data.customer.website);
+							$("#edit-phone").val(data.customer.phone);
+							$("#edit-description").val(data.customer.description);
+							$("#edit-contactSummary").val(data.customer.contactSummary);
+							$("#edit-nextContactTime").val(data.customer.nextContactTime);
+							$("#edit-address").val(data.customer.address);
+							$("#editCustomerModal").modal("show");
+						}
+					})
+				}
+			})
+			$("#updateBtn").click(function () {
+				$.ajax({
+					url:"customer",
+					data: {
+						"id":$.trim($("#edit-id").val()),
+						"owner":$.trim($("#edit-owner").val()),
+						"name":$.trim($("#edit-name").val()),
+						"website":$.trim($("#edit-website").val()),
+						"phone":$.trim($("#edit-phone").val()),
+						"description":$.trim($("#edit-description").val()),
+						"contactSummary":$.trim($("#edit-contactSummary").val()),
+						"nextContactTime":$.trim($("#edit-nextContactTime").val()),
+						"address":$.trim($("#edit-address").val()),
+						"_method":"put"
+					},
+					type:"post",
+					dataType:"json",
+					success:function (data) {
+						if (data=="1") {
+							alert("Customer update succeed!");
+							pageList($("#customerPage").bs_pagination('getOption', 'currentPage')
+									,$("#customerPage").bs_pagination('getOption', 'rowsPerPage'));
+							$("#editCustomerModal").modal("hide");
+						} else alert("Customer update failed!");
+					}
+				})
+			})
 		
 		});
 
@@ -111,7 +170,7 @@
 						var html = "";
 						$.each(data.dataList,function (i,obj) {
 							html += "<tr><td><input name='check' type='checkbox' value='"+obj.id+"'/></td>"
-									+"<td><a style='text-decoration: none; cursor: pointer;' onclick=window.location.href=\'customer/detail?id="+obj.id+"\';>"+obj.name+"</a></td>"
+									+"<td><a style='text-decoration: none; cursor: pointer;' onclick=window.location.href=\'customer/detail/"+obj.id+"\';>"+obj.name+"</a></td>"
 									+"<td>"+obj.owner+"</td>"
 									+"<td>"+obj.phone+"</td>"
 									+"<td>"+obj.website+"</td></tr>";
@@ -136,13 +195,13 @@
 						});
 					} else alert("Customers query failed!");
 				},
-				/*error:function (XMLHttpRequest,textStatus) {
+				error:function (XMLHttpRequest,textStatus) {
 					var redirect = XMLHttpRequest.getResponseHeader("x-Redirect");
 					if (redirect=="true") {
 						alert("Please login!");
 						window.location.href = XMLHttpRequest.getResponseHeader("x-Path");
 					}
-				}*/
+				}
 			})
 		}
 
@@ -194,9 +253,9 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">Description</label>
+							<label for="create-description" class="col-sm-2 control-label">Description</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
 						</div>
 						<div style="height: 1px; width: 103%; background-color: #D5D5D5; left: -13px; position: relative;"></div>
@@ -220,9 +279,9 @@
 
                         <div style="position: relative;top: 20px;">
                             <div class="form-group">
-                                <label for="create-address1" class="col-sm-2 control-label">Address</label>
+                                <label for="create-address" class="col-sm-2 control-label">Address</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="1" id="create-address1"></textarea>
+                                    <textarea class="form-control" rows="1" id="create-address"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -248,38 +307,36 @@
 					<h4 class="modal-title" id="myModalLabel">Update Customer</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form">
-					
+					<form id="update-form" class="form-horizontal" role="form">
+						<input id="edit-id" type="hidden" />
 						<div class="form-group">
-							<label for="edit-customerOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-owner" class="col-sm-2 control-label">Owner<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="edit-customerOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+								<select class="form-control" id="edit-owner">
+
 								</select>
 							</div>
-							<label for="edit-customerName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-name" class="col-sm-2 control-label">Name<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-customerName" value="动力节点">
+								<input type="text" class="form-control" id="edit-name" />
 							</div>
 						</div>
 						
 						<div class="form-group">
-                            <label for="edit-website" class="col-sm-2 control-label">公司网站</label>
+                            <label for="edit-website" class="col-sm-2 control-label">Website</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-website" value="http://www.bjpowernode.com">
+                                <input type="text" class="form-control" id="edit-website" />
                             </div>
-							<label for="edit-phone" class="col-sm-2 control-label">公司座机</label>
+							<label for="edit-phone" class="col-sm-2 control-label">Phone</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-phone" value="010-84846003">
+								<input type="text" class="form-control" id="edit-phone" />
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
+							<label for="edit-description" class="col-sm-2 control-label">Description</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="edit-describe"></textarea>
+								<textarea class="form-control" rows="3" id="edit-description"></textarea>
 							</div>
 						</div>
 						
@@ -287,15 +344,15 @@
 
                         <div style="position: relative;top: 15px;">
                             <div class="form-group">
-                                <label for="create-contactSummary1" class="col-sm-2 control-label">联系纪要</label>
+                                <label for="edit-contactSummary" class="col-sm-2 control-label">Contact Summary</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="3" id="create-contactSummary1"></textarea>
+                                    <textarea class="form-control" rows="3" id="edit-contactSummary"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="create-nextContactTime2" class="col-sm-2 control-label">下次联系时间</label>
+                                <label for="edit-nextContactTime" class="col-sm-2 control-label">Next Contact Time</label>
                                 <div class="col-sm-10" style="width: 300px;">
-                                    <input type="text" class="form-control" id="create-nextContactTime2">
+                                    <input type="text" class="form-control time" id="edit-nextContactTime" readonly>
                                 </div>
                             </div>
                         </div>
@@ -304,9 +361,9 @@
 
                         <div style="position: relative;top: 20px;">
                             <div class="form-group">
-                                <label for="create-address" class="col-sm-2 control-label">详细地址</label>
+                                <label for="edit-address" class="col-sm-2 control-label">Address</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="1" id="create-address">北京大兴大族企业湾</textarea>
+                                    <textarea class="form-control" rows="1" id="edit-address"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -314,8 +371,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button id="updateBtn" type="button" class="btn btn-primary" data-dismiss="modal">Update</button>
 				</div>
 			</div>
 		</div>
@@ -371,7 +428,7 @@
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button id="createBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCustomerModal"><span class="glyphicon glyphicon-plus"></span> Create</button>
-				  <button id="updateBtn" type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span class="glyphicon glyphicon-pencil"></span> Update</button>
+				  <button id="editBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Update</button>
 				  <button id="deleteBtn" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> Delete</button>
 				</div>
 				

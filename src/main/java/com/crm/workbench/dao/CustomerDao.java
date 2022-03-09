@@ -12,7 +12,11 @@ public interface CustomerDao {
 
     Customer select(String name);
 
+    Customer edit(String id);
+
     int insert(Customer customer);
+
+    int update(Customer customer);
 
     List<String> selectName(String name);
 

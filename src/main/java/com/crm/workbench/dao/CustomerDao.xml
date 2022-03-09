@@ -47,10 +47,21 @@
         SELECT * FROM t_customer WHERE name = #{name}
     </select>
 
+    <select id="edit" resultType="com.crm.workbench.domain.Customer">
+        SELECT * FROM t_customer WHERE id = #{id}
+    </select>
+
     <insert id="insert">
         INSERT INTO t_customer(id,owner,name,website,phone,createBy,createTime,contactSummary,nextContactTime,description,address)
         VALUES(#{id},#{owner},#{name},#{website},#{phone},#{createBy},#{createTime},#{contactSummary},#{nextContactTime},#{description},#{address})
     </insert>
+
+    <update id="update">
+        UPDATE t_customer
+        SET owner=#{owner},name=#{name},website=#{website},phone=#{phone},description=#{description},contactSummary=#{contactSummary},
+            nextContactTime=#{nextContactTime},address=#{address}
+        WHERE id=#{id}
+    </update>
 
     <select id="selectName" resultType="string">
         SELECT name from t_customer WHERE name LIKE CONCAT('%',#{name},'%')
